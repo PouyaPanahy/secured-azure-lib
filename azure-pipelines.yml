@@ -16,6 +16,9 @@ stages:
   - job: DeployArmTemplates
     displayName: "Deploy Arm Templates"
     steps:
+    - script: 'tzutil /s "W. Europe Standard Time"'
+      displayName: 'Set Timezone to W. Europe'
+      
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM Template deployment: Resources'
       inputs:
@@ -24,5 +27,6 @@ stages:
         resourceGroupName: 'Managed-rg'
         location: 'West Europe'
         csmFile: 'Arm-Templates/resources.json'
+        csmParametersFile: 'Arm-Templates/resources.parameters.json'
         deploymentName: 'arm-cd-release'
     

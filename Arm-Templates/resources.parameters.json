@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "otapEnvName": { "value": "ontwikkeling" },
+    
+    "premium_principalId": { "value": "ce89383d-b3d0-4194-add6-e321980d9609" },
+    "vsts_principalId": { "value": "4a12bcdd-44f2-4bf7-9a3a-3ea7834ebbac" },
+
+    "vnetSubscriptionId": { "value": "1007b210-10e0-469c-88d3-1e4d767269c9" },
+    "vnetResourceGroupName": { "value": "rdc-ot-shared" },
+    "vnetName": { "value": "rdc-ot-vnet" },
+    "subnet1Name": { "value": "rdc-ot-vnet-subnet-asev2" },
+
+    "adSubscriptionId": { "value": "74d6a1ea-410e-43ac-8a6a-28b098c3435f" },
+    "adResourceGroupName": { "value": "common-services-shared" },
+    "adVnetName": { "value": "common-services-vnet" },
+    "adSubnetName": { "value": "common-services-vnet-subnet-development" },
+
+    "ssSubscriptionId": { "value": "74d6a1ea-410e-43ac-8a6a-28b098c3435f" },
+    "ssResourceGroupName": { "value": "common-services-shared" },
+    "ssVnetName": { "value": "common-services-vnet" },
+    "ssSubnetName": { "value": "common-services-vnet-subnet-infra" }
+
+  }
+}
