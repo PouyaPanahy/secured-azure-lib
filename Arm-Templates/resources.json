@@ -13,6 +13,10 @@
         "virtualNetworks_subnet_name": {
             "defaultValue": "/default",
             "type": "String"
+        },
+        "virtualnetworks_internal_vnet_externalid": {
+            "defaultValue": "/subscriptions/a6f564d4-e424-4cbb-b881-79aef78c437e/resourceGroups/network-rg/providers/microsoft.network/virtualnetworks/internal-vnet",
+            "type": "String"
         }
     },
     "variables": {
@@ -52,7 +56,8 @@
             "ipRules": [],
             "virtualNetworkRules": [
               {
-                "id": "[resourceId(variables('subscriptionId'), parameters('virtualNetworks_rg_name'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_name'), parameters('virtualNetworks_subnet_name'))]"
+                "id": "[concat(parameters('virtualnetworks_internal_vnet_externalid'), '/subnets/default')]",
+                "ignoreMissingVnetServiceEndpoint": false
               }
             ]
           },
