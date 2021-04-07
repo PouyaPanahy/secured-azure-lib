@@ -1,0 +1,19 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.1",
+    "parameters": {},
+    "variables": {
+		 "rgName": "Managed-rg",
+		 "rgLocation": "West Europe"
+	},
+    "resources": [
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2018-05-01",
+            "location": "[variables('rgLocation')]",
+            "name": "[variables('rgName')]",
+            "properties": {}
+        }
+    ],
+    "outputs": {}
+}
