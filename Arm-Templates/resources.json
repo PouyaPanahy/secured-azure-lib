@@ -12,7 +12,7 @@
 		 "rgLocation": "West Europe",
          "tenantId": "[subscription().tenantId]",
          "subscriptionId": "[subscription().id]",         
-         "keyvault_name": "Managed-kv"
+         "keyvault_name": "Secured-Managed-kv"
 	},
     "resources": [       
         {           

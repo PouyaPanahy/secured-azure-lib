@@ -17,7 +17,7 @@ stages:
     displayName: "Deploy Arm Templates"
     steps:      
     - task: AzureResourceManagerTemplateDeployment@3
-      displayName: 'ARM Template deployment: Network'
+      displayName: 'ARM deployment: Network'
       inputs:
         azureResourceManagerConnection: 'network-sp'
         subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
@@ -28,7 +28,7 @@ stages:
         deploymentName: 'arm-cd-release'
             
     - task: AzureResourceManagerTemplateDeployment@3
-      displayName: 'ARM Template deployment: Resources'
+      displayName: 'ARM deployment: Resources'
       inputs:
         azureResourceManagerConnection: 'Managed-rg-sp'
         subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
