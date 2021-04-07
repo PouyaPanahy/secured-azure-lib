@@ -23,7 +23,7 @@
          "tenantId": "[subscription().tenantId]",  
          "subscriptionId": "[subscription().id]",    
          "keyvault_name": "Secured-Managed-kv",
-         "resourceId_contributors": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+         "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c"
 	},
     "resources": [       
         {           
@@ -58,7 +58,7 @@
           },
           "accessPolicies": [
             {
-              "objectId": "[reference(variables('resourceId_contributors'),'2019-08-01', 'full').identity.principalId]",
+              "objectId": "[variables('contributors_objectId')]",
               "tenantId": "[variables('tenantId')]",
               "permissions": {
                 "keys": [],
