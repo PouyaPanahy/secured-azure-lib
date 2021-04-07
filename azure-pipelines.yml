@@ -15,10 +15,7 @@ stages:
   jobs:
   - job: DeployArmTemplates
     displayName: "Deploy Arm Templates"
-    steps:
-    - script: 'tzutil /s "W. Europe Standard Time"'
-      displayName: 'Set Timezone to W. Europe'
-      
+    steps:      
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM Template deployment: Resources'
       inputs:
