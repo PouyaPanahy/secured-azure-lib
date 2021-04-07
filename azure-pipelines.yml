@@ -9,11 +9,62 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+- stage: Deploy_Resources
+  jobs:
+  - job: CredentialScanner
+    displayName: "Scan for credentials"
+    steps:
+    - script: 'tzutil /s "W. Europe Standard Time"'
+      displayName: 'Set Timezone to W. Europe'
+
+    - task: CredScan@2
+      inputs:
+        toolMajorVersion: 'V2'
+
+    - task: SdtReport@1
+      inputs:
+        AllTools: false
+        BinSkim: false
+        CredScan: true
+        MSRD: false
+        RoslynAnalyzers: false
+        TSLint: false
+        ToolLogsNotFoundAction: 'Standard'
+
+    - task: PublishSecurityAnalysisLogs@2
+      inputs:
+        ArtifactName: 'CodeAnalysisLogs'
+        ArtifactType: 'Container'
+        AllTools: false
+        AntiMalware: false
+        BinSkim: false
+        CredScan: true
+        MSRD: false
+        RoslynAnalyzers: false
+        TSLint: false
+        ToolLogsNotFoundAction: 'Standard'
+
+    - task: PostAnalysis@1
+      inputs:
+        AllTools: false
+        BinSkim: false
+        CredScan: true
+        RoslynAnalyzers: false
+        TSLint: false
+        ToolLogsNotFoundAction: 'Standard'
+
+  - job: DeployArmTemplates
+    displayName: "Deploy Arm Templates"
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'ARM Template deployment: Resources'
+      inputs:
+        azureResourceManagerConnection: 'Managed-rg-sp'
+        subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
+        resourceGroupName: 'Managed-rg'
+        location: 'West Europe'
+        csmFile: 'Arm-Templates/resources.json'
+        deploymentName: 'arm-cd-release'
+    
