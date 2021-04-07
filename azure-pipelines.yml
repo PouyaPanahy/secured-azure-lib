@@ -27,6 +27,6 @@ stages:
         resourceGroupName: 'Managed-rg'
         location: 'West Europe'
         csmFile: 'Arm-Templates/resources.json'
-        csmParametersFile: 'Arm-Templates/resources.parameters.json'
+        csmParametersFile: 'Arm-Templates/resource.parameters.json'
         deploymentName: 'arm-cd-release'
     

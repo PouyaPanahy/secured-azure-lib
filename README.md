@@ -8,6 +8,7 @@ This project will focus on finding best practices to access Azure resources in a
 - Assuming you have a Group in your Azure AD called Managed-rg-Contributors
 - Assuming you have a resource group called Managed-rg in your subscription
 - Assuming you have Contributor role given to Managed-rg-Contributors group on your resource group level
+- Assuming you have a seporate resource group for VNet
 
 # Azure DevOps Prerequisites
 - Assuming you have a project in your organization level called Managed-Security
