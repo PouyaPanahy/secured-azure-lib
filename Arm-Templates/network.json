@@ -2,12 +2,12 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.1",
     "parameters": {
-        "virtualNetworks_rg_vnet_name": {
-            "defaultValue": "managed-rg-vnet",
+        "virtualNetworks_vnet_name": {
+            "defaultValue": "internal-vnet",
             "type": "String"
         },        
         "virtualNetworks_rg_name": {
-            "defaultValue": "vnet-rg",
+            "defaultValue": "Network-rg",
             "type": "String"
         }
     },
@@ -15,19 +15,14 @@
 		 "tagsArray": {
             "service": "PoC",
             "costs": "none"
-         },		 
-		 "rgName": "Managed-rg",
-		 "rgLocation": "West Europe",
-         "tenantId": "[subscription().tenantId]",
-         "subscriptionId": "[subscription().id]",         
-         "keyvault_name": "Managed-kv"
+         }
 	},
     "resources": [
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_rg_vnet_name')]",
-            "location": "westeurope",
+            "name": "[parameters('virtualNetworks_vnet_name')]",
+            "location": "[resourceGroup().location]",
             "tags": "[variables('tagsArray')]",
             "properties": {
                 "addressSpace": {
@@ -53,9 +48,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_rg_vnet_name'), '/default')]",
+            "name": "[concat(parameters('virtualNetworks_vnet_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_rg_vnet_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.0.0/24",
