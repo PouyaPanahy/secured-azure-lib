@@ -13,3 +13,6 @@ This project will focus on finding best practices to access Azure resources in a
 - Assuming you have a project in your organization level called Managed-Security
 - Assuming you have a pipeline that has been linked to this repository with read and write access
 - Assuming there is a service principal assigned as service connection in the project that has full access to the resourcegroup in Azure
+
+# Azure Network Prerequisites
+- You need to have a VNet in Azure network where all your resources are attached to.
