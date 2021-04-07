@@ -19,6 +19,17 @@ stages:
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM Template deployment: Resources'
       inputs:
+        azureResourceManagerConnection: 'internal-vnet-sp'
+        subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
+        resourceGroupName: 'internal-vnet'
+        location: 'West Europe'
+        csmFile: 'Arm-Templates/network.json'
+        csmParametersFile: 'Arm-Templates/network.parameters.json'
+        deploymentName: 'arm-cd-release'
+            
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'ARM Template deployment: Resources'
+      inputs:
         azureResourceManagerConnection: 'Managed-rg-sp'
         subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
         resourceGroupName: 'Managed-rg'
