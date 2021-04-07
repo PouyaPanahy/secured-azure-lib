@@ -1,14 +1,27 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.1",
-    "parameters": {
+    "parameters": {    
+        "virtualNetworks_rg_name": {
+            "defaultValue": "Network-rg",
+            "type": "String"
+        },
+        "virtualNetworks_vnet_name": {
+            "defaultValue": "internal-vnet",
+            "type": "String"
+        },
+        "virtualNetworks_subnet_name": {
+            "defaultValue": "/default",
+            "type": "String"
+        }
     },
     "variables": {
 		 "tagsArray": {
             "service": "PoC",
             "costs": "none"
          },		 
-         "tenantId": "[subscription().tenantId]",      
+         "tenantId": "[subscription().tenantId]",  
+         "subscriptionId": "[subscription().id]",    
          "keyvault_name": "Secured-Managed-kv",
          "resourceId_contributors": "8c212170-481b-4e31-ba85-9ba0759f552c"
 	},
@@ -37,7 +50,11 @@
             "defaultAction": "Deny",
             "bypass": "AzureServices",
             "ipRules": [],
-            "virtualNetworkRules": []
+            "virtualNetworkRules": [
+              {
+                "id": "[resourceId(variables('subscriptionId'), parameters('virtualNetworks_rg_name'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_name'), parameters('virtualNetworks_subnet_name'))]"
+              }
+            ]
           },
           "accessPolicies": [
             {

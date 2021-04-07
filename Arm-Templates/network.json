@@ -9,6 +9,10 @@
         "virtualNetworks_rg_name": {
             "defaultValue": "Network-rg",
             "type": "String"
+        },        
+        "virtualNetworks_subnet_name": {
+            "defaultValue": "/default",
+            "type": "String"
         }
     },
     "variables": {
@@ -48,7 +52,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_name'), '/default')]",
+            "name": "[concat(parameters('virtualNetworks_vnet_name'), parameters('virtualNetworks_subnet_name'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name'))]"
             ],
