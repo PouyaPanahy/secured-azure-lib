@@ -13,48 +13,6 @@ pool:
 stages:
 - stage: Deploy_Resources
   jobs:
-  - job: CredentialScanner
-    displayName: "Scan for credentials"
-    steps:
-    - script: 'tzutil /s "W. Europe Standard Time"'
-      displayName: 'Set Timezone to W. Europe'
-
-    - task: CredScan@2
-      inputs:
-        toolMajorVersion: 'V2'
-
-    - task: SdtReport@1
-      inputs:
-        AllTools: false
-        BinSkim: false
-        CredScan: true
-        MSRD: false
-        RoslynAnalyzers: false
-        TSLint: false
-        ToolLogsNotFoundAction: 'Standard'
-
-    - task: PublishSecurityAnalysisLogs@2
-      inputs:
-        ArtifactName: 'CodeAnalysisLogs'
-        ArtifactType: 'Container'
-        AllTools: false
-        AntiMalware: false
-        BinSkim: false
-        CredScan: true
-        MSRD: false
-        RoslynAnalyzers: false
-        TSLint: false
-        ToolLogsNotFoundAction: 'Standard'
-
-    - task: PostAnalysis@1
-      inputs:
-        AllTools: false
-        BinSkim: false
-        CredScan: true
-        RoslynAnalyzers: false
-        TSLint: false
-        ToolLogsNotFoundAction: 'Standard'
-
   - job: DeployArmTemplates
     displayName: "Deploy Arm Templates"
     steps:
