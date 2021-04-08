@@ -17,6 +17,9 @@
         "virtualnetworks_internal_vnet_externalid": {
             "defaultValue": "/subscriptions/a6f564d4-e424-4cbb-b881-79aef78c437e/resourceGroups/network-rg/providers/microsoft.network/virtualnetworks/internal-vnet",
             "type": "String"
+        },
+        "hostingPlanName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -81,7 +84,51 @@
             }
           ]
         }
-     }
+     },
+      {
+          "apiVersion": "2018-11-01",
+          "name": "[parameters('hostingPlanName')]",
+          "type": "Microsoft.Web/serverfarms",
+          "location": "[resourceGroup().location]",
+          "kind": "",
+          "tags": {},
+          "dependsOn": [],
+          "properties": {
+              "name": "[parameters('hostingPlanName')]",
+              "workerSize": "[parameters('workerSize')]",
+              "workerSizeId": "[parameters('workerSizeId')]",
+              "numberOfWorkers": "[parameters('numberOfWorkers')]"
+          },
+          "sku": {
+              "Tier": "[parameters('sku')]",
+              "Name": "[parameters('skuCode')]"
+          }
+      },
+      {
+        "type": "Microsoft.Web/serverfarms",
+        "apiVersion": "2018-02-01",
+        "name": "[parameters('hostingPlanName')]",
+        "location": "[resourceGroup().location]",
+        "tags":"[variables('tagsArray')]",
+        "sku": {
+            "name": "S1",
+            "tier": "Standard",
+            "size": "S1",
+            "family": "S",
+            "capacity": 1
+        },
+        "kind": "app",
+        "properties": {
+            "perSiteScaling": false,
+            "maximumElasticWorkerCount": 1,
+            "isSpot": false,
+            "reserved": false,
+            "isXenon": false,
+            "hyperV": false,
+            "targetWorkerCount": 0,
+            "targetWorkerSizeId": 0
+        }
+      }
     ],
     "outputs": {}
 }
