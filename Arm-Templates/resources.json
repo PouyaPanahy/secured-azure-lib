@@ -30,7 +30,7 @@
          "keyvault_name": "Secured-Managed-kv",
          "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c",
          "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-         "virtualnetworks_internal_vnet_externalid": "[concat('/subscriptions/', subscription().id,'/resourceGroups/', resourceGroup().name, '/providers/microsoft.network/virtualnetworks/', parameters('virtualNetworks_vnet_name'), '/subnets/default')]" 
+         "virtualnetworks_internal_vnet_externalid": "[concat('/subscriptions/', subscription().id,'/resourceGroups/', parameters('virtualNetworks_rg_name'), '/providers/microsoft.network/virtualnetworks/', parameters('virtualNetworks_vnet_name'), '/subnets/default')]" 
 	},
     "resources": [       
         {           
