@@ -10,10 +10,6 @@
             "defaultValue": "internal-vnet",
             "type": "String"
         },
-        "virtualNetworks_subnet_name": {
-            "defaultValue": "/default",
-            "type": "String"
-        },
         "hostingPlanName": {
             "type": "string"
         },
@@ -29,8 +25,7 @@
          "tenantId": "[subscription().tenantId]",  
          "keyvault_name": "Secured-Managed-kv",
          "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c",
-         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-         "virtualnetworks_internal_vnet_externalid": "[concat('/subscriptions/', subscription().id,'/resourceGroups/', parameters('virtualNetworks_rg_name'), '/providers/microsoft.network/virtualnetworks/', parameters('virtualNetworks_vnet_name'), '/subnets/default')]" 
+         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
 	},
     "resources": [       
         {           
@@ -59,7 +54,7 @@
             "ipRules": [],
             "virtualNetworkRules": [
               {
-                "id": "[variables('virtualnetworks_internal_vnet_externalid')]",
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name')), '/subnets/default')]",
                 "ignoreMissingVnetServiceEndpoint": false
               }
             ]

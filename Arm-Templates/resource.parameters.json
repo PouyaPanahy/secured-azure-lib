@@ -4,7 +4,6 @@
   "parameters": {
     "virtualNetworks_vnet_name": { "value": "internal-vnet" },
     "virtualNetworks_rg_name": { "value": "Network-rg" },
-    "virtualNetworks_subnet_name": { "value": "/default" },
      
     "hostingPlanName": { "value": "managed-asp"},
     "site_app_name": { "value": "managed-app"}
