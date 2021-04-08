@@ -20,17 +20,21 @@
         },
         "hostingPlanName": {
             "type": "string"
+        },
+        "site_app_name": {
+            "type": "string"
         }
     },
     "variables": {
-		 "tagsArray": {
+		     "tagsArray": {
             "service": "PoC",
             "costs": "none"
          },		 
          "tenantId": "[subscription().tenantId]",  
-         "subscriptionId": "[subscription().id]",    
          "keyvault_name": "Secured-Managed-kv",
-         "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c"
+         "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c",
+         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+    
 	},
     "resources": [       
         {           
@@ -86,25 +90,6 @@
         }
      },
       {
-          "apiVersion": "2018-11-01",
-          "name": "[parameters('hostingPlanName')]",
-          "type": "Microsoft.Web/serverfarms",
-          "location": "[resourceGroup().location]",
-          "kind": "",
-          "tags": {},
-          "dependsOn": [],
-          "properties": {
-              "name": "[parameters('hostingPlanName')]",
-              "workerSize": "[parameters('workerSize')]",
-              "workerSizeId": "[parameters('workerSizeId')]",
-              "numberOfWorkers": "[parameters('numberOfWorkers')]"
-          },
-          "sku": {
-              "Tier": "[parameters('sku')]",
-              "Name": "[parameters('skuCode')]"
-          }
-      },
-      {
         "type": "Microsoft.Web/serverfarms",
         "apiVersion": "2018-02-01",
         "name": "[parameters('hostingPlanName')]",
@@ -128,6 +113,128 @@
             "targetWorkerCount": 0,
             "targetWorkerSizeId": 0
         }
+      },
+      {
+        "type": "Microsoft.Web/sites",
+        "apiVersion": "2018-11-01",
+        "name": "[parameters('site_app_name')]",
+        "location": "[resourceGroup().location]",
+        "tags":"[variables('tagsArray')]",
+        "kind": "app",
+        "properties": {
+            "enabled": true,
+            "hostNameSslStates": [
+                {
+                    "name": "[concat(parameters('site_app_name'), '.azurewebsites.net')]",
+                    "sslState": "Disabled",
+                    "hostType": "Standard"
+                },
+                {
+                    "name": "[concat(parameters('site_app_name'), '.scm.azurewebsites.net')]",
+                    "sslState": "Disabled",
+                    "hostType": "Repository"
+                }
+            ],
+            "serverFarmId": "[variables('serverFarmId')]",
+            "reserved": false,
+            "isXenon": false,
+            "hyperV": false,
+            "siteConfig": {},
+            "scmSiteAlsoStopped": false,
+            "clientAffinityEnabled": true,
+            "clientCertEnabled": false,
+            "hostNamesDisabled": false,
+            "containerSize": 0,
+            "dailyMemoryTimeQuota": 0,
+            "httpsOnly": false,
+            "redundancyMode": "None"
+        }
+      },
+      {
+        "type": "Microsoft.Web/sites/config",
+        "apiVersion": "2018-11-01",
+        "name": "[concat(parameters('site_app_name'), '/web')]",
+        "location": "[resourceGroup().location]",
+        "tags":"[variables('tagsArray')]",
+        "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', parameters('site_app_name'))]"
+        ],
+        "properties": {
+            "numberOfWorkers": 1,
+            "defaultDocuments": [
+                "Default.htm",
+                "Default.html",
+                "Default.asp",
+                "index.htm",
+                "index.html",
+                "iisstart.htm",
+                "default.aspx",
+                "index.php",
+                "hostingstart.html"
+            ],
+            "netFrameworkVersion": "v5.0",
+            "requestTracingEnabled": false,
+            "remoteDebuggingEnabled": false,
+            "httpLoggingEnabled": false,
+            "logsDirectorySizeLimit": 35,
+            "detailedErrorLoggingEnabled": false,
+            "publishingUsername": "[concat('$', parameters('site_app_name'))]",
+            "azureStorageAccounts": {},
+            "scmType": "None",
+            "use32BitWorkerProcess": true,
+            "webSocketsEnabled": false,
+            "alwaysOn": false,
+            "managedPipelineMode": "Integrated",
+            "virtualApplications": [
+                {
+                    "virtualPath": "/",
+                    "physicalPath": "site\\wwwroot",
+                    "preloadEnabled": true
+                }
+            ],
+            "loadBalancing": "LeastRequests",
+            "experiments": {
+                "rampUpRules": []
+            },
+            "autoHealEnabled": false,
+            "localMySqlEnabled": false,
+            "ipSecurityRestrictions": [
+                {
+                    "ipAddress": "Any",
+                    "action": "Allow",
+                    "priority": 1,
+                    "name": "Allow all",
+                    "description": "Allow all access"
+                }
+            ],
+            "scmIpSecurityRestrictions": [
+                {
+                    "ipAddress": "Any",
+                    "action": "Allow",
+                    "priority": 1,
+                    "name": "Allow all",
+                    "description": "Allow all access"
+                }
+            ],
+            "scmIpSecurityRestrictionsUseMain": false,
+            "http20Enabled": false,
+            "minTlsVersion": "1.2",
+            "ftpsState": "AllAllowed",
+            "reservedInstanceCount": 0
+        }
+      },
+      {
+          "type": "Microsoft.Web/sites/hostNameBindings",
+          "apiVersion": "2018-11-01",
+          "name": "[concat(parameters('site_app_name'), '/', parameters('site_app_name'), '.azurewebsites.net')]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+              "[resourceId('Microsoft.Web/sites', parameters('site_app_name'))]"
+          ],
+          "properties": {
+              "siteName": "managed-app",
+              "hostNameType": "Verified"
+          }
       }
     ],
     "outputs": {}
