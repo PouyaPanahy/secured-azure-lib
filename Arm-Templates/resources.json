@@ -15,6 +15,10 @@
         },
         "site_app_name": {
             "type": "string"
+        },
+        "virtualnetworks_internal_vnet_externalid": {
+            "defaultValue": "/subscriptions/a6f564d4-e424-4cbb-b881-79aef78c437e/resourceGroups/network-rg/providers/microsoft.network/virtualnetworks/internal-vnet",
+            "type": "String"
         }
     },
     "variables": {
@@ -54,7 +58,7 @@
             "ipRules": [],
             "virtualNetworkRules": [
               {
-                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name')), '/subnets/default')]",
+                "id": "[concat(parameters('virtualnetworks_internal_vnet_externalid'), '/subnets/default')]",
                 "ignoreMissingVnetServiceEndpoint": false
               }
             ]

@@ -4,6 +4,7 @@
   "parameters": {
     "virtualNetworks_vnet_name": { "value": "internal-vnet" },
     "virtualNetworks_rg_name": { "value": "Network-rg" },
-    "virtualNetworks_subnet_name": { "value": "/default" }
+    "virtualNetworks_subnet_name": { "value": "/default" },
+    "virtualnetworks_internal_vnet_externalid": { "value": "/subscriptions/a6f564d4-e424-4cbb-b881-79aef78c437e/resourceGroups/network-rg/providers/microsoft.network/virtualnetworks/internal-vnet" },
   }
 }
