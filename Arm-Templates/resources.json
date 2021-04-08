@@ -14,10 +14,6 @@
             "defaultValue": "/default",
             "type": "String"
         },
-        "virtualnetworks_internal_vnet_externalid": {
-            "defaultValue": "/subscriptions/a6f564d4-e424-4cbb-b881-79aef78c437e/resourceGroups/network-rg/providers/microsoft.network/virtualnetworks/internal-vnet",
-            "type": "String"
-        },
         "hostingPlanName": {
             "type": "string"
         },
@@ -33,7 +29,9 @@
          "tenantId": "[subscription().tenantId]",  
          "keyvault_name": "Secured-Managed-kv",
          "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c",
-         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+         "virtualnetworks_internal_vnet_externalid": "[concat('/subscriptions/', subscription().id,'/resourceGroups/', resourceGroup().name, '/providers/microsoft.network/virtualnetworks/', parameters('virtualNetworks_vnet_name'), '/subnets/default')]" ,
+   
     
 	},
     "resources": [       
@@ -63,7 +61,7 @@
             "ipRules": [],
             "virtualNetworkRules": [
               {
-                "id": "[concat(parameters('virtualnetworks_internal_vnet_externalid'), '/subnets/default')]",
+                "id": "[variables('virtualnetworks_internal_vnet_externalid')]",
                 "ignoreMissingVnetServiceEndpoint": false
               }
             ]
@@ -121,6 +119,9 @@
         "location": "[resourceGroup().location]",
         "tags":"[variables('tagsArray')]",
         "kind": "app",
+        "identity": {
+            "type": "SystemAssigned"
+        },
         "properties": {
             "enabled": true,
             "hostNameSslStates": [
@@ -148,7 +149,10 @@
             "dailyMemoryTimeQuota": 0,
             "httpsOnly": false,
             "redundancyMode": "None"
-        }
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+        ]
       },
       {
         "type": "Microsoft.Web/sites/config",
@@ -232,7 +236,7 @@
               "[resourceId('Microsoft.Web/sites', parameters('site_app_name'))]"
           ],
           "properties": {
-              "siteName": "managed-app",
+              "siteName": "[parameters('site_app_name')]",
               "hostNameType": "Verified"
           }
       }
