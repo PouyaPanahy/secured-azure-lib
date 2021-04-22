@@ -38,4 +38,3 @@ stages:
         csmParametersFile: 'Arm-Templates/resource.parameters.json'
         deploymentName: 'arm-cd-release'
     
-    - task: WhiteSource@21
