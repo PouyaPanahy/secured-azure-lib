@@ -39,5 +39,3 @@ stages:
         deploymentName: 'arm-cd-release'
     
     - task: WhiteSource@21
-      inputs:
-        cwd: '$(System.DefaultWorkingDirectory)'
