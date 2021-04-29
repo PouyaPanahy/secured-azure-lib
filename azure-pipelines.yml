@@ -6,9 +6,6 @@
 trigger:
 - main
 
-pool:
-  vmImage: windows-latest
-
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
@@ -19,6 +16,8 @@ stages:
   jobs:
   - job: DeployArmTemplates
     displayName: "Deploy Arm Templates"
+    pool:
+      vmImage: ubuntu-latest
     steps:      
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM deployment: Network'
@@ -44,6 +43,8 @@ stages:
     
   - job: BuildSource
     displayName: "Build source code"
+    pool:
+      vmImage: windows-latest
     steps:
       - task: NuGetToolInstaller@1
       - task: NuGetCommand@2
