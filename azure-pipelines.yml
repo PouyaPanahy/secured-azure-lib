@@ -29,6 +29,7 @@ stages:
     steps:      
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM deployment: Network'
+      enabled: false
       inputs:
         azureResourceManagerConnection: 'network-sp'
         subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
@@ -40,6 +41,7 @@ stages:
             
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM deployment: Resources'
+      enabled: false
       inputs:
         azureResourceManagerConnection: 'Managed-rg-sp'
         subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
@@ -72,10 +74,12 @@ stages:
     steps:
       - task: NuGetToolInstaller@1
       - task: NuGetCommand@2
+        enabled: false
         inputs:
           restoreSolution: '$(solution)'
 
-      - task: SonarCloudPrepare@1
+      - task: SonarCloudPrepare@12
+        enabled: false
         inputs:
           SonarCloud: 'SonarCloud'
           organization: 'pouya-panahy'
@@ -83,15 +87,18 @@ stages:
           projectKey: 'PouyaPanahy_secured-azure-lib'
           projectName: 'PouyaPanahy_secured-azure-lib'
           
-      - task: VSBuild@1
+      - task: VSBuild@12
+        enabled: false
         inputs:
           solution: '$(solution)'
           msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
 
-      - task: SonarCloudAnalyze@1
+      - task: SonarCloudAnalyze@12
+        enabled: false
 
-      - task: SonarCloudPublish@1
+      - task: SonarCloudPublish@12
+        enabled: false
         inputs:
           pollingTimeoutSec: '300'
