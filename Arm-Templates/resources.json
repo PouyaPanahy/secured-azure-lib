@@ -248,6 +248,11 @@
           "name": "Basic",
           "tier": "Basic"
         },
+        "identity": {
+          "principalId": "2ed1ce3b-f46e-4b2a-b9a7-e7224afe46ee",
+          "tenantId": "a562fea0-892e-406f-9610-c5aae045dc36",
+          "type": "SystemAssigned"
+        },
         "properties": {
           "adminUserEnabled": true,
           "publicNetworkAccess": "Enabled",
