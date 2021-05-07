@@ -22,14 +22,15 @@
         }
     },
     "variables": {
-		     "tagsArray": {
-            "service": "PoC",
-            "costs": "none"
-         },		 
-         "tenantId": "[subscription().tenantId]",  
-         "keyvault_name": "Secured-Managed-kv",
-         "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c",
-         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+      "tagsArray": {
+        "service": "PoC",
+        "costs": "none",
+        "costCenter": "My Cost Center"
+      },		 
+      "tenantId": "[subscription().tenantId]",  
+      "keyvault_name": "Secured-Managed-kv",
+      "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c",
+      "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
 	},
     "resources": [       
         {           
@@ -38,8 +39,7 @@
         "apiVersion": "2018-02-14",
         "location": "[resourceGroup().location]",
         "tags": "[variables('tagsArray')]",
-        "dependsOn": [           
-        ],
+        "dependsOn": [],
         "properties": {
           "enabledForDeployment": false,
           "enabledForTemplateDeployment": true,
@@ -225,17 +225,34 @@
         }
       },
       {
-          "type": "Microsoft.Web/sites/hostNameBindings",
-          "apiVersion": "2018-11-01",
-          "name": "[concat(parameters('site_app_name'), '/', parameters('site_app_name'), '.azurewebsites.net')]",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-              "[resourceId('Microsoft.Web/sites', parameters('site_app_name'))]"
-          ],
-          "properties": {
-              "siteName": "[parameters('site_app_name')]",
-              "hostNameType": "Verified"
-          }
+        "type": "Microsoft.Web/sites/hostNameBindings",
+        "apiVersion": "2018-11-01",
+        "name": "[concat(parameters('site_app_name'), '/', parameters('site_app_name'), '.azurewebsites.net')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/sites', parameters('site_app_name'))]"
+        ],
+        "properties": {
+          "siteName": "[parameters('site_app_name')]",
+          "hostNameType": "Verified"
+        }
+      },
+      {
+        "type": "Microsoft.ContainerRegistry/registries",
+        "apiVersion": "2020-11-01-preview",
+        "name": "SecuredContainerRegistry",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [],
+        "tags": "[variables('tagsArray')]",
+        "sku": {
+          "name": "Basic",
+          "tier": "Basic"
+        },
+        "properties": {
+          "adminUserEnabled": true,
+          "publicNetworkAccess": "Enabled",
+          "zoneRedundancy": "Disabled"
+        }
       }
     ],
     "outputs": {}
