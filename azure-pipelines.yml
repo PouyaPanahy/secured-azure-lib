@@ -12,10 +12,12 @@ variables:
   buildConfiguration: 'Release'
   
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'dbe0a89e-bfa1-45ed-bc4a-4e587ae8f0c2'
-  imageRepository: 'SecuredApplication'
-  containerRegistry: 'SecuredContainerRegistry.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'  
+  dockerRegistryServiceConnection: 'b2742380-436f-4e69-b876-2367ac0369f8'
+  imageRepository: 'securedazurelib'
+  containerRegistry: 'securedcontainerregistry.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/SecuredResources/SecuredWebApi/Dockerfile'
+  tag: '$(Build.BuildId)'
+
 
 stages:
 - stage: Deploy_Resources
