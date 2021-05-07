@@ -10,7 +10,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["SecuredWebApi/SecuredWebApi.csproj", "SecuredWebApi/"]
+COPY ["*.csproj", "SecuredWebApi/"]
 RUN dotnet restore "SecuredWebApi/SecuredWebApi.csproj"
 COPY . .
 WORKDIR "/src/SecuredWebApi"
