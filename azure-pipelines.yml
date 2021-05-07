@@ -56,8 +56,8 @@ stages:
           SonarCloud: 'SonarCloud'
           organization: 'pouya-panahy'
           scannerMode: 'MSBuild'
-          projectKey: 'secured-azure-lib'
-          projectName: 'secured-azure-lib'
+          projectKey: 'PouyaPanahy_secured-azure-lib'
+          projectName: 'PouyaPanahy_secured-azure-lib'
           
       - task: VSBuild@1
         inputs:
