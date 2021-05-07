@@ -12,8 +12,8 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["*.csproj", "SecuredWebApi/"]
 RUN dotnet restore "SecuredWebApi/SecuredWebApi.csproj"
-COPY . .
 WORKDIR "/src/SecuredWebApi"
+COPY . .
 RUN dotnet build "SecuredWebApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
