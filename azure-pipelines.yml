@@ -10,6 +10,14 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'b2742380-436f-4e69-b876-2367ac0369f8'
+  imageRepository: 'securedazurelib'
+  containerRegistry: 'securedcontainerregistry.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/SecuredResources/SecuredWebApi/Dockerfile'
+  tag: '$(Build.BuildId)'
+
 
 stages:
 - stage: Deploy_Resources
@@ -41,6 +49,22 @@ stages:
         csmParametersFile: 'Arm-Templates/resource.parameters.json'
         deploymentName: 'arm-cd-release'
     
+  - job: DockerBuild
+    displayName: "Build docker image and deploy"
+    pool: 
+        vmImage: ubuntu-latest
+
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          latest
+
   - job: BuildSource
     displayName: "Build source code"
     pool:
