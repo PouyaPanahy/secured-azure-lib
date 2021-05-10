@@ -10,9 +10,10 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  azureSubscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
   
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'b2742380-436f-4e69-b876-2367ac0369f8'
+  dockerRegistryServiceConnection: 'SecuredContainerRegistry'
   imageRepository: 'securedazurelib'
   containerRegistry: 'securedcontainerregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/SecuredResources/SecuredWebApi/Dockerfile'
@@ -32,7 +33,7 @@ stages:
       enabled: false
       inputs:
         azureResourceManagerConnection: 'network-sp'
-        subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
+        subscriptionId: $(azureSubscriptionId)
         resourceGroupName: 'Network-rg'
         location: 'West Europe'
         csmFile: 'Arm-Templates/network.json'
@@ -44,7 +45,7 @@ stages:
       enabled: false
       inputs:
         azureResourceManagerConnection: 'Managed-rg-sp'
-        subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
+        subscriptionId: $(azureSubscriptionId)
         resourceGroupName: 'Managed-rg'
         location: 'West Europe'
         csmFile: 'Arm-Templates/resources.json'
