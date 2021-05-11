@@ -21,7 +21,8 @@ variables:
 
 
 stages:
-- stage: Deploy_Resources
+- stage: ARM_Deployment
+  displayName: 'ARM Deployment'
   jobs:
   - job: DeployArmTemplates
     displayName: "Deploy Arm Templates"
@@ -51,7 +52,12 @@ stages:
         csmFile: 'Arm-Templates/resources.json'
         csmParametersFile: 'Arm-Templates/resource.parameters.json'
         deploymentName: 'arm-cd-release'
-    
+
+- stage: DockerBuild
+  displayName: 'Build and register docker image'
+  dependsOn: ARM_Deployment
+  condition: succeeded()
+  jobs:
   - job: DockerBuild
     displayName: "Build docker image and deploy"
     pool: 
@@ -67,7 +73,11 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           latest
-
+- stage: LegacyStage
+  displayName: 'Quality Check'
+  dependsOn: ARM_Deployment
+  condition: succeeded()
+  jobs:
   - job: BuildSource
     displayName: "Build source code"
     pool:
