@@ -50,6 +50,64 @@
       }
     },
     {
+      "name": "secured-container-instance",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-03-01",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tagsArray')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "sku": "Standard",
+        "osType": "Linux",
+        "containers": [
+          {
+            "name": "secured-container-instance",
+            "properties": {
+              "image": "securedcontainerregistry.azurecr.io/securedazurelib:latest",
+              "resources": {
+                "requests": {
+                  "cpu": "1",
+                  "memoryInGB": "1.5"
+                }
+              },
+              "ports": [
+                {
+                  "protocol": "TCP",
+                  "port": 80
+                },
+                {
+                  "protocol": "TCP",
+                  "port": 443
+                }
+              ]
+            }
+          }
+        ],
+        "imageRegistryCredentials": [
+          {
+            "server": "securedcontainerregistry.azurecr.io",
+            "username": "SecuredContainerRegistry"
+          }
+        ],
+        "restartPolicy": "OnFailure",
+        "ipAddress": {
+          "ports": [
+            {
+              "protocol": "TCP",
+              "port": 80
+            },
+            {
+              "protocol": "TCP",
+              "port": 443
+            }
+          ],
+          "type": "Public"
+        }
+      }
+    },
+    {
       "name": "[variables('keyvault_name')]",
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2018-02-14",
