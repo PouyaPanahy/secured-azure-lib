@@ -10,9 +10,10 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  azureSubscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
   
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'b2742380-436f-4e69-b876-2367ac0369f8'
+  dockerRegistryServiceConnection: 'SecuredContainerRegistry'
   imageRepository: 'securedazurelib'
   containerRegistry: 'securedcontainerregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/SecuredResources/SecuredWebApi/Dockerfile'
@@ -20,7 +21,8 @@ variables:
 
 
 stages:
-- stage: Deploy_Resources
+- stage: ARM_Deployment
+  displayName: 'ARM Deployment'
   jobs:
   - job: DeployArmTemplates
     displayName: "Deploy Arm Templates"
@@ -32,7 +34,7 @@ stages:
       enabled: false
       inputs:
         azureResourceManagerConnection: 'network-sp'
-        subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
+        subscriptionId: $(azureSubscriptionId)
         resourceGroupName: 'Network-rg'
         location: 'West Europe'
         csmFile: 'Arm-Templates/network.json'
@@ -44,13 +46,18 @@ stages:
       enabled: false
       inputs:
         azureResourceManagerConnection: 'Managed-rg-sp'
-        subscriptionId: 'a6f564d4-e424-4cbb-b881-79aef78c437e'
+        subscriptionId: $(azureSubscriptionId)
         resourceGroupName: 'Managed-rg'
         location: 'West Europe'
         csmFile: 'Arm-Templates/resources.json'
         csmParametersFile: 'Arm-Templates/resource.parameters.json'
         deploymentName: 'arm-cd-release'
-    
+
+- stage: DockerBuild
+  displayName: 'Build and register docker image'
+  dependsOn: ARM_Deployment
+  condition: succeeded()
+  jobs:
   - job: DockerBuild
     displayName: "Build docker image and deploy"
     pool: 
@@ -65,8 +72,12 @@ stages:
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
-          latest
-
+          $(Build.BuildNumber)
+- stage: LegacyStage
+  displayName: 'Quality Check'
+  dependsOn: ARM_Deployment
+  condition: succeeded()
+  jobs:
   - job: BuildSource
     displayName: "Build source code"
     pool:
