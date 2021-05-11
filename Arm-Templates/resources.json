@@ -10,253 +10,96 @@
             "defaultValue": "internal-vnet",
             "type": "String"
         },
-        "hostingPlanName": {
-            "type": "string"
-        },
-        "site_app_name": {
-            "type": "string"
-        },
         "virtualnetworks_internal_vnet_externalid": {
             "defaultValue": "/subscriptions/a6f564d4-e424-4cbb-b881-79aef78c437e/resourceGroups/network-rg/providers/microsoft.network/virtualnetworks/internal-vnet",
             "type": "String"
         }
     },
-    "variables": {
-      "tagsArray": {
-        "service": "PoC",
-        "costs": "none",
-        "costCenter": "My Cost Center"
-      },		 
-      "tenantId": "[subscription().tenantId]",  
-      "keyvault_name": "Secured-Managed-kv",
-      "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c",
-      "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
-	},
-    "resources": [       
-        {           
-        "name": "[variables('keyvault_name')]",
-        "type": "Microsoft.KeyVault/vaults",
-        "apiVersion": "2018-02-14",
-        "location": "[resourceGroup().location]",
-        "tags": "[variables('tagsArray')]",
-        "dependsOn": [],
-        "properties": {
-          "enabledForDeployment": false,
-          "enabledForTemplateDeployment": true,
-          "enabledForDiskEncryption": false,
-          "enableRbacAuthorization": false,
-          "tenantId": "[variables('tenantId')]",
-          "sku": {
-            "name": "Standard",
-            "family": "A"
-          },
-          "enableSoftDelete": true,
-          "softDeleteRetentionInDays": 90,
-          "networkAcls": {
-            "defaultAction": "Deny",
-            "bypass": "AzureServices",
-            "ipRules": [],
-            "virtualNetworkRules": [
-              {
-                "id": "[concat(parameters('virtualnetworks_internal_vnet_externalid'), '/subnets/default')]",
-                "ignoreMissingVnetServiceEndpoint": false
-              }
-            ]
-          },
-          "accessPolicies": [
+  "variables": {
+    "tagsArray": {
+      "service": "PoC",
+      "costs": "none",
+      "costCenter": "My Cost Center"
+    },
+    "tenantId": "[subscription().tenantId]",
+    "keyvault_name": "Secured-Managed-kv",
+    "contributors_objectId": "8c212170-481b-4e31-ba85-9ba0759f552c",
+    "containerRegistryName": "SecuredContainerRegistry"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2020-11-01-preview",
+      "name": "[variables('containerRegistryName')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tagsArray')]",
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "adminUserEnabled": true,
+        "dataEndpointEnabled": false,
+        "publicNetworkAccess": "Enabled",
+        "networkRuleBypassOptions": "AzureServices",
+        "zoneRedundancy": "Disabled",
+        "anonymousPullEnabled": false
+      }
+    },
+    {
+      "name": "[variables('keyvault_name')]",
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2018-02-14",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tagsArray')]",
+      "dependsOn": [],
+      "properties": {
+        "enabledForDeployment": false,
+        "enabledForTemplateDeployment": true,
+        "enabledForDiskEncryption": false,
+        "enableRbacAuthorization": false,
+        "tenantId": "[variables('tenantId')]",
+        "sku": {
+          "name": "Standard",
+          "family": "A"
+        },
+        "enableSoftDelete": true,
+        "softDeleteRetentionInDays": 90,
+        "networkAcls": {
+          "defaultAction": "Deny",
+          "bypass": "AzureServices",
+          "ipRules": [],
+          "virtualNetworkRules": [
             {
-              "objectId": "[variables('contributors_objectId')]",
-              "tenantId": "[variables('tenantId')]",
-              "permissions": {
-                "keys": [],
-                "secrets": [
-                  "Get",
-                  "List",
-                  "Set",
-                  "Delete",
-                  "Recover",
-                  "Backup",
-                  "Restore"
-                ],
-                "certificates": []
-              }
+              "id": "[concat(parameters('virtualnetworks_internal_vnet_externalid'), '/subnets/default')]",
+              "ignoreMissingVnetServiceEndpoint": false
             }
           ]
-        }
-     },
-      {
-        "type": "Microsoft.Web/serverfarms",
-        "apiVersion": "2018-02-01",
-        "name": "[parameters('hostingPlanName')]",
-        "location": "[resourceGroup().location]",
-        "tags":"[variables('tagsArray')]",
-        "sku": {
-            "name": "S1",
-            "tier": "Standard",
-            "size": "S1",
-            "family": "S",
-            "capacity": 1
         },
-        "kind": "app",
-        "properties": {
-            "perSiteScaling": false,
-            "maximumElasticWorkerCount": 1,
-            "isSpot": false,
-            "reserved": false,
-            "isXenon": false,
-            "hyperV": false,
-            "targetWorkerCount": 0,
-            "targetWorkerSizeId": 0
-        }
-      },
-      {
-        "type": "Microsoft.Web/sites",
-        "apiVersion": "2018-11-01",
-        "name": "[parameters('site_app_name')]",
-        "location": "[resourceGroup().location]",
-        "tags":"[variables('tagsArray')]",
-        "kind": "app",
-        "identity": {
-            "type": "SystemAssigned"
-        },
-        "properties": {
-            "enabled": true,
-            "hostNameSslStates": [
-                {
-                    "name": "[concat(parameters('site_app_name'), '.azurewebsites.net')]",
-                    "sslState": "Disabled",
-                    "hostType": "Standard"
-                },
-                {
-                    "name": "[concat(parameters('site_app_name'), '.scm.azurewebsites.net')]",
-                    "sslState": "Disabled",
-                    "hostType": "Repository"
-                }
-            ],
-            "serverFarmId": "[variables('serverFarmId')]",
-            "reserved": false,
-            "isXenon": false,
-            "hyperV": false,
-            "siteConfig": {},
-            "scmSiteAlsoStopped": false,
-            "clientAffinityEnabled": true,
-            "clientCertEnabled": false,
-            "hostNamesDisabled": false,
-            "containerSize": 0,
-            "dailyMemoryTimeQuota": 0,
-            "httpsOnly": false,
-            "redundancyMode": "None"
-        },
-        "dependsOn": [
-          "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+        "accessPolicies": [
+          {
+            "objectId": "[variables('contributors_objectId')]",
+            "tenantId": "[variables('tenantId')]",
+            "permissions": {
+              "keys": [],
+              "secrets": [
+                "Get",
+                "List",
+                "Set",
+                "Delete",
+                "Recover",
+                "Backup",
+                "Restore"
+              ],
+              "certificates": []
+            }
+          }
         ]
-      },
-      {
-        "type": "Microsoft.Web/sites/config",
-        "apiVersion": "2018-11-01",
-        "name": "[concat(parameters('site_app_name'), '/web')]",
-        "location": "[resourceGroup().location]",
-        "tags":"[variables('tagsArray')]",
-        "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('site_app_name'))]"
-        ],
-        "properties": {
-            "numberOfWorkers": 1,
-            "defaultDocuments": [
-                "Default.htm",
-                "Default.html",
-                "Default.asp",
-                "index.htm",
-                "index.html",
-                "iisstart.htm",
-                "default.aspx",
-                "index.php",
-                "hostingstart.html"
-            ],
-            "netFrameworkVersion": "v5.0",
-            "requestTracingEnabled": false,
-            "remoteDebuggingEnabled": false,
-            "httpLoggingEnabled": false,
-            "logsDirectorySizeLimit": 35,
-            "detailedErrorLoggingEnabled": false,
-            "publishingUsername": "[concat('$', parameters('site_app_name'))]",
-            "azureStorageAccounts": {},
-            "scmType": "None",
-            "use32BitWorkerProcess": true,
-            "webSocketsEnabled": false,
-            "alwaysOn": false,
-            "managedPipelineMode": "Integrated",
-            "virtualApplications": [
-                {
-                    "virtualPath": "/",
-                    "physicalPath": "site\\wwwroot",
-                    "preloadEnabled": true
-                }
-            ],
-            "loadBalancing": "LeastRequests",
-            "experiments": {
-                "rampUpRules": []
-            },
-            "autoHealEnabled": false,
-            "localMySqlEnabled": false,
-            "ipSecurityRestrictions": [
-                {
-                    "ipAddress": "Any",
-                    "action": "Allow",
-                    "priority": 1,
-                    "name": "Allow all",
-                    "description": "Allow all access"
-                }
-            ],
-            "scmIpSecurityRestrictions": [
-                {
-                    "ipAddress": "Any",
-                    "action": "Allow",
-                    "priority": 1,
-                    "name": "Allow all",
-                    "description": "Allow all access"
-                }
-            ],
-            "scmIpSecurityRestrictionsUseMain": false,
-            "http20Enabled": false,
-            "minTlsVersion": "1.2",
-            "ftpsState": "AllAllowed",
-            "reservedInstanceCount": 0
-        }
-      },
-      {
-        "type": "Microsoft.Web/sites/hostNameBindings",
-        "apiVersion": "2018-11-01",
-        "name": "[concat(parameters('site_app_name'), '/', parameters('site_app_name'), '.azurewebsites.net')]",
-        "location": "[resourceGroup().location]",
-        "dependsOn": [
-          "[resourceId('Microsoft.Web/sites', parameters('site_app_name'))]"
-        ],
-        "properties": {
-          "siteName": "[parameters('site_app_name')]",
-          "hostNameType": "Verified"
-        }
-      },
-      {
-        "type": "Microsoft.ContainerRegistry/registries",
-        "apiVersion": "2020-11-01-preview",
-        "name": "SecuredContainerRegistry",
-        "location": "[resourceGroup().location]",
-        "dependsOn": [],
-        "tags": "[variables('tagsArray')]",
-        "sku": {
-          "name": "Basic",
-          "tier": "Basic"
-        },
-        "identity": {
-          "type": "SystemAssigned"
-        },
-        "properties": {
-          "adminUserEnabled": true,
-          "publicNetworkAccess": "Enabled",
-          "zoneRedundancy": "Disabled"
-        }
       }
-    ],
+    }
+  ],
     "outputs": {}
 }
