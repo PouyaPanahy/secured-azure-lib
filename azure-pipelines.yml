@@ -72,6 +72,7 @@ stages:
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
+          latest
           $(Build.BuildNumber)
 - stage: LegacyStage
   displayName: 'Quality Check'
